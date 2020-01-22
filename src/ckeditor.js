@@ -35,6 +35,32 @@ import FontBackgroundColor from "@ckeditor/ckeditor5-font/src/fontbackgroundcolo
 import ImageResize from "@ckeditor/ckeditor5-image/src/imageresize";
 import MathType from "@wiris/mathtype-ckeditor5";
 import Alignment from "@ckeditor/ckeditor5-alignment/src/alignment";
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+
+class PutImageBehindText extends Plugin {
+    init() {
+		const editor = this.editor;
+		
+		editor.ui.componentFactory.add('putImageBehindText', locale => {
+			const view = new ButtonView( locale );
+
+            view.set( {
+                label: 'Insert image',
+                icon: imageIcon,
+                tooltip: true
+            } );
+
+            // Callback executed once the image is clicked.
+            view.on( 'execute', () => {
+                const imageURL = prompt( 'Image URL' );
+            } );
+
+            return view;
+		})
+    }
+}
 
 export default class InlineEditor extends InlineEditorBase {}
 
@@ -69,7 +95,8 @@ InlineEditor.builtinPlugins = [
 	Font,
 	FontColor,
 	FontBackgroundColor,
-	MathType
+	MathType,
+	PutImageBehindText
 ];
 
 // Editor configuration.
@@ -101,10 +128,23 @@ InlineEditor.defaultConfig = {
 		]
 	},
 	image: {
+		styles: [
+			// This option is equal to a situation where no style is applied.
+			'full',
+
+			// This represents an image aligned to the left.
+			'alignLeft',
+
+			// This represents an image aligned to the right.
+			'alignRight'
+		],
 		toolbar: [
+			"imageTextAlternative",
+			"|",
 			"imageStyle:full",
 			"imageStyle:alignLeft",
-			"imageStyle:alignRight"
+			"imageStyle:alignRight",
+			"putImageBehindText"
 		]
 	},
 	table: {
